@@ -1,5 +1,7 @@
 package com.company.multiServer;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,23 +55,28 @@ public class ClientConnection implements Runnable
                     {
                         done = true;
                     }
-                    else if (stream.contains("NAME:"))
+                    else if (stream.contains("NAME:")
+                            || stream.contains("Name:"))
                     {
                         setName(stream);
                     }
-                    else if (stream.contains("PUT:"))
+                    else if (stream.contains("PUT:")
+                            || stream.contains("Put"))
                     {
                         PUTmethod(stream);
                     }
-                    else if (stream.contains("COUNT:"))
+                    else if (stream.contains("COUNT:")
+                            || stream.contains("Count:"))
                     {
-
+                        writeClient.println("SERVER: Array Count = " + messageArray.size());
                     }
-                    else if (stream.contains("GET:"))
+                    else if (stream.contains("GET:")
+                            || stream.contains("Get:"))
                     {
-
+                        GETmessage(stream);
                     }
-                    else if (stream.equals("Help"))
+                    else if (stream.equals("HELP")
+                            || stream.contains("Help"))
                     {
                         String helpMes = "SERVER_HELP: set nick - NAME: , put message - PUT: , array count - COUNT: , get message - GET: , close - !#!exit";
                         writeClient.println(helpMes);
@@ -112,6 +119,45 @@ public class ClientConnection implements Runnable
         String tempMessage = stream.substring(4);
         messageArray.add(tempMessage);
         System.out.println("Message added to array...");
+        writeClient.println("SERVER: Message added...");
+    }
+
+    private void GETmessage(String stream)
+    {
+        System.out.println("RECIEVED: " + stream);
+        String tempNumber = stream.substring(4);
+        try {
+            int tempInt = Integer.parseInt(tempNumber);
+            tempInt = tempInt - 1;
+            //String gottenMessage = "";
+            try
+            {
+                String gottenMessage = messageArray.get(tempInt);
+                System.out.println("Message to send ot client: " + gottenMessage);
+                writeClient.println("SERVER: Message " + tempInt + " - " + gottenMessage);
+            }
+            catch (IndexOutOfBoundsException ex)
+            {
+                //ex.printStackTrace();
+                System.out.println("Could'nt send message, Number out of bound...");
+                writeClient.println("SERVER_ERROR: Not valid number...");
+            }
+
+
+        }
+        catch (NumberFormatException e)
+        {
+            System.out.println("Client tries - " + stream);
+            if (tempNumber.equals("ALL")
+                    || tempNumber.equals("All")
+                    || tempNumber.equals("all"))
+            {
+                writeClient.println("SERVER: Trying to get all messages...");
+            } else
+            {
+                writeClient.println("SERVER_ERROR: Not a valid number...");
+            }
+        }
     }
 
 
