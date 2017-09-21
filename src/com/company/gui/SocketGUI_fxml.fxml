@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="401.0" prefWidth="614.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.company.gui.SocketGUIController">
+   <children>
+      <TextArea id="DisplayArea" layoutX="319.0" layoutY="65.0" prefHeight="214.0" prefWidth="258.0" />
+      <Button id="send" layoutX="98.0" layoutY="313.0" mnemonicParsing="false" text="Send" />
+      <Button id="count" layoutX="416.0" layoutY="313.0" mnemonicParsing="false" text="Count" />
+      <TextArea id="inputArea" layoutX="40.0" layoutY="65.0" prefHeight="214.0" prefWidth="258.0" />
+   </children>
+</AnchorPane>
