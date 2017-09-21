@@ -1,4 +1,4 @@
-package com.company;
+package com.company.oldStuff;
 
 import java.io.IOException;
 import java.io.InputStream;
