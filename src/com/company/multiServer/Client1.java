@@ -10,6 +10,8 @@ public class Client1
     private static PrintStream printStream;
     private static PrintWriter printWriter;
     private static Scanner scanServerOutput;
+
+
     public static void main(String args[])
     {
         // Scanner to accept user input
@@ -18,7 +20,7 @@ public class Client1
         // Make it so the userInput is needed for this ip and port
         try
         {
-            socket = new Socket("127.0.0.1", 8001);
+            socket = new Socket("10.200.128.71", 8001);
             //System.out.println("Enter something: ");
 
             // Print out welcome from the Server
@@ -46,6 +48,7 @@ public class Client1
                 {
                     System.out.println(scanServerOutput.nextLine());
                 }
+
 
                 //String tempString = scanServerInput.nextLine();
                 //System.out.println(tempString);

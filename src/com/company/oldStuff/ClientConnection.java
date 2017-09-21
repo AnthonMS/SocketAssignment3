@@ -23,7 +23,7 @@ public class ClientConnection implements Runnable
         try {
             try {
                 /*
-                Vi har behov for at kommunikere med serveren. Vi opretter derfor en inut og en output stream,
+                Vi har behov for at kommunikere med serveren. Vi opretter derfor en input og en output stream,
                 og binder hver især til Socket'ens
                 input og output stream.
                 Socket kører i full-duplex og der er dermed tovejs kommunikation
