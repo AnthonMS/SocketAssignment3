@@ -46,7 +46,9 @@ public class Client1
 
                 if (scanServerOutput.hasNextLine())
                 {
-                    System.out.println(scanServerOutput.nextLine());
+                    //while (scanServerOutput.hasNextLine()) {
+                        System.out.println(scanServerOutput.nextLine());
+                    //}
                 }
 
 

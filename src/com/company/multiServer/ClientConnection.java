@@ -13,9 +13,14 @@ public class ClientConnection implements Runnable
 {
     private boolean done;
     private Socket socket;
+    private InputStream inputStream;
+    private OutputStream outputStream;
+    private Scanner in;
+    private PrintWriter writeClient;
+
     private String name = "Guest";
-    public static ArrayList<String> nameArray = new ArrayList<String>();
     public static ArrayList<String> messageArray = new ArrayList<String>();
+
 
     public ClientConnection(Socket s) throws SocketException, IOException
     {
@@ -29,12 +34,12 @@ public class ClientConnection implements Runnable
             try {
                 // To communicate with the client,
                 // we need to specify input & output stream.
-                InputStream inputStream = socket.getInputStream();
-                OutputStream outputStream = socket.getOutputStream();
+                inputStream = socket.getInputStream();
+                outputStream = socket.getOutputStream();
 
-                Scanner in = new Scanner(inputStream);
+                in = new Scanner(inputStream);
                 // Når vi skriver til output streamen bruger vi her en PrintWriter
-                PrintWriter writeClient = new PrintWriter(outputStream, true);
+                writeClient = new PrintWriter(outputStream, true);
 
                 // Send Welcome to the client. Make it print it out
                 writeClient.println("Welcome!");
@@ -50,22 +55,32 @@ public class ClientConnection implements Runnable
                     }
                     else if (stream.contains("NAME:"))
                     {
-                        System.out.println("RECIEVED: " + stream);
-                        String tempName = stream.substring(5);
-                        tempName = trimCustom(tempName);
-                        name = tempName;
-                        System.out.println("Name sat as " + name);
-                        writeClient.println("SERVER: Your name is now: " + name);
-
+                        setName(stream);
                     }
                     else if (stream.contains("PUT:"))
                     {
+                        PUTmethod(stream);
+                    }
+                    else if (stream.contains("COUNT:"))
+                    {
 
                     }
-                    else
+                    else if (stream.contains("GET:"))
+                    {
+
+                    }
+                    else if (stream.equals("Help"))
+                    {
+                        String helpMes = "SERVER_HELP: set nick - NAME: , put message - PUT: , array count - COUNT: , get message - GET: , close - !#!exit";
+                        writeClient.println(helpMes);
+                    }
+                    else // Show error message
                     {
                         System.out.println("RECIEVED: " + stream + " - FROM " + name);
-                        writeClient.println(name + ": " + stream);
+                        String errorMes = "SERVER_ERROR: " + stream;
+                        String errorMes2 = " Is not a valid command, type 'Help'´for help";
+                        writeClient.println(errorMes + errorMes2);
+
                     }
                 }
 
@@ -80,10 +95,23 @@ public class ClientConnection implements Runnable
         }
     }
 
+    private void setName(String stream)
+    {
+        System.out.println("RECIEVED: " + stream);
+        String tempName = stream.substring(5);
+        tempName = trimCustom(tempName);
+        name = tempName;
+        System.out.println("Name sat as " + name);
+        writeClient.println("SERVER: Your name is now: " + name);
+    }
+
 
     private void PUTmethod(String stream)
     {
-
+        System.out.println("RECIEVED: " + stream);
+        String tempMessage = stream.substring(4);
+        messageArray.add(tempMessage);
+        System.out.println("Message added to array...");
     }
 
 
