@@ -20,6 +20,8 @@ public class ClientConnection implements Runnable
     private Scanner in;
     private PrintWriter writeClient;
 
+    private int counter = 0;
+
     private String name = "Guest";
     public static ArrayList<String> messageArray = new ArrayList<String>();
 
@@ -27,6 +29,7 @@ public class ClientConnection implements Runnable
     public ClientConnection(Socket s) throws SocketException, IOException
     {
         this.socket = s;
+        counter = messageArray.size();
     }
 
 
@@ -45,6 +48,7 @@ public class ClientConnection implements Runnable
 
                 // Send Welcome to the client. Make it print it out
                 writeClient.println("Welcome!");
+                System.out.println("Client connected from: " +  socket.getLocalAddress().getHostAddress());
 
                 // Now we are gonna handle if the user want's to close the connection
                 done = false;
@@ -68,7 +72,17 @@ public class ClientConnection implements Runnable
                     else if (stream.contains("COUNT:")
                             || stream.contains("Count:"))
                     {
-                        writeClient.println("SERVER: Array Count = " + messageArray.size());
+                        System.out.println("RECIEVED: " + stream);
+                        int currentCount = messageArray.size();
+                        // check if new messages
+                        if (currentCount > counter)
+                        {
+                            // currentCount is larger than counter
+                            int newMessages = currentCount - counter;
+                            writeClient.println("SERVER: Array Count = " + currentCount + " - " + newMessages + " New messages.");
+                            counter = currentCount;
+                        }
+                        writeClient.println("SERVER: Array Count = " + currentCount);
                     }
                     else if (stream.contains("GET:")
                             || stream.contains("Get:"))
@@ -78,6 +92,7 @@ public class ClientConnection implements Runnable
                     else if (stream.equals("HELP")
                             || stream.contains("Help"))
                     {
+                        System.out.println("RECIEVED: " + stream);
                         String helpMes = "SERVER_HELP: set nick - NAME: , put message - PUT: , array count - COUNT: , get message - GET: , close - !#!exit";
                         writeClient.println(helpMes);
                     }
@@ -117,7 +132,7 @@ public class ClientConnection implements Runnable
     {
         System.out.println("RECIEVED: " + stream);
         String tempMessage = stream.substring(4);
-        messageArray.add(tempMessage);
+        messageArray.add(name + ": " + tempMessage);
         System.out.println("Message added to array...");
         writeClient.println("SERVER: Message added...");
     }
